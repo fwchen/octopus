@@ -1,0 +1,23 @@
+version: "3.2"
+services:
+  nginx:
+    restart: always
+    image: fwchen/octopus-web:v0.0.60
+    ports:
+      - "127.0.0.1:9090:80"
+    networks:
+      - octopus
+    links:
+      - backend:api
+  backend:
+    restart: always
+    image: fwchen/octopus-backend:v0.0.57
+    ports:
+      - "127.0.0.1:5501:5501"
+    networks:
+      - octopus
+    volumes:
+      - ./config.yaml:/usr/src/app/config/config.yaml
+      - ./log:/usr/src/app/log
+networks:
+  octopus:
