@@ -17,7 +17,7 @@ services:
     networks:
       - octopus
     volumes:
-      - ./config.yaml:/usr/src/app/config/config.custom.yaml
+      - ./config.yaml:/usr/src/app/config/custom.config.yaml
       - ./log:/usr/src/app/log
 networks:
   octopus:
