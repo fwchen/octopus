@@ -15,7 +15,6 @@ _Simple, scalable project management system._
 
 ---
 
-
 ## Hosting Octopus on Your Own Server
 If you are looking to evaluate using Octopus, the fastest way is our hosted version. If you are looking to develop Octopus, read our Github README.
 
@@ -32,22 +31,17 @@ To learn more about updating Octopus, visit our [update](./docs/update.md) guide
 ### Run on any Linux server with Docker
 This method assumes you know how to set up DNS records, install Linux packages, and configure nginx.
 
-Add DNS record pointing to machine and ensure ports 80 and 443 are open. For example octopus.yourcompany.com
+- Add DNS record pointing to machine and ensure ports 80 and 443 are open. For example octopus.yourcompany.com
+- Install Docker and Docker Compose.
+- Install MySQL locally or use a service like Amazon RDS.
+- Copy docker-compose.yml to your server.
+- Edit the docker-compose.yml and optionally edit the environmental variables listed in it, documented below under “Configurations”. You must at least set the database url and SMTP server.
+- Run `docker-compose up -d` to start Octopus.
+- Install nginx or your favorite web server or load balancer.
+- Configure virtual hosts in nginx. Use proxy_pass to forward requests to the Docker based service.
+- Run the django migrations (do this on every upgrade). In the container run ./manage.py migrate. If using docker-compose, you can run docker-compose run --rm web ./manage.py migrate.
+- Install certbot to set up SSL. This is required.
 
-Install Docker and Docker Compose.
-
-Install MySQL locally or use a service like Amazon RDS.
-
-Copy docker-compose.yml to your server.
-
-Edit the docker-compose.yml and optionally edit the environmental variables listed in it, documented below under “Configurations”. You must at least set the database url and SMTP server.
-
-Run `docker-compose up -d` to start Octopus.
-
-Install nginx or your favorite web server or load balancer.
-Configure virtual hosts in nginx. Use proxy_pass to forward requests to the Docker based service.
-Run the django migrations (do this on every upgrade). In the container run ./manage.py migrate. If using docker-compose, you can run docker-compose run --rm web ./manage.py migrate.
-Install certbot to set up SSL. This is required.
 Example nginx configuration in /etc/nginx/sites-enabled/default BEFORE running certbot.
 
 ``` nginx
@@ -60,7 +54,7 @@ server {
         } 
 } 
 ```
-Finally just go to mydomain.com and you should see the frontend.
+- Finally just go to mydomain.com and you should see the frontend.
 
 
 
