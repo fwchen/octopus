@@ -24,6 +24,7 @@ To host Octopus yourself, you need:
 - A MongoDB database.
 - A Linux server or platform as a service that supports Docker
 - A domain with SSL/TLS. Let’s Encrypt works great.
+- A RabbitMQ message middleware
 We suggest using either Docker Compose, DigitalOcean App Platform.
 
 To learn more about updating Octopus, visit our [update](./docs/update.md) guide.
@@ -31,18 +32,17 @@ To learn more about updating Octopus, visit our [update](./docs/update.md) guide
 ### Run on any Linux server with Docker
 This method assumes you know how to set up DNS records, install Linux packages, and configure nginx.
 
-- Add DNS record pointing to machine and ensure ports 80 and 443 are open. For example octopus.yourcompany.com
-- Install Docker and Docker Compose.
-- Install MySQL locally or use a service like Amazon RDS.
-- Copy docker-compose.yml to your server.
-- Edit the docker-compose.yml and optionally edit the environmental variables listed in it, documented below under “Configurations”. You must at least set the database url and SMTP server.
+- Add DNS record pointing to machine and ensure ports 80 and 443 are open. For example **octopus.yourcompany.com**
+- Install **Docker** and **Docker Compose**.
+- Install **MySQL** locally or use a service like Amazon RDS.
+- Copy `docker-compose.yml` to your server.
+- Edit the `docker-compose.yml` and optionally edit the environmental variables listed in it, documented below under “Configurations”. You must at least set the database url and SMTP server.
 - Run `docker-compose up -d` to start Octopus.
 - Install nginx or your favorite web server or load balancer.
-- Configure virtual hosts in nginx. Use proxy_pass to forward requests to the Docker based service.
-- Run the django migrations (do this on every upgrade). In the container run ./manage.py migrate. If using docker-compose, you can run docker-compose run --rm web ./manage.py migrate.
-- Install certbot to set up SSL. This is required.
+- Configure virtual hosts in nginx. Use `proxy_pass` to forward requests to the Docker based service.
+- (Optional) Run the database migrations (do this on every upgrade). Usually that is done automatically.
 
-Example nginx configuration in /etc/nginx/sites-enabled/default BEFORE running certbot.
+Example nginx configuration in `/etc/nginx/sites-enabled/default` BEFORE running certbot.
 
 ``` nginx
 server { 
@@ -61,24 +61,24 @@ server {
 ## Contributing to Octopus
 This page is intended to give new contributors an overview of Octopus.
 
-Octopus is comprised of several Git repos, stored in my Github. You can find more specific and complete documentation in each project, but here is a summary of the key repositories that make Passit work:
+Octopus is comprised of several Git repos, stored in my Github. You can find more specific and complete documentation in each project, but here is a summary of the key repositories that make Octopus work:
 
 - [octopus-core](https://github.com/fwchen/octopus-core.git) - Java/SpringBoot - This provides an API and basic storage services for user data. The backend does no crypto, except in unit tests. It does provide basic group access control list features. Even if we didn’t encrypt user data, the backend would provide a traditional server that ensures users are only allowed to create, edit, and view what they should have access to.
+- [octopus-gateway](https://github.com/fwchen/octopus-core.git) - Java/SprintBoot/WebFlux. This project is our gateway that protect our core api layer.
 - [octopus-web](https://github.com/fwchen/octopus-web.git) - TypeScript, React, and ngrx/store (Redux) - This project is our user interface. It powers our web pages.
-- [octopus-gateway](https://github.com/fwchen/octopus-core.git) - Java/SprintBoot/WebFlux
 
 
 ## Reporting issues
-If you have a bug or feature request to report - you may report it gitlab project where the issue is found. If the issue involves multiple parts or you don’t know where it belongs - you may report it to the Passit meta repo.
+If you have a bug or feature request to report - you may report it gitlab project where the issue is found. If the issue involves multiple parts or you don’t know where it belongs - you may report it to the Octopus meta repo.
 
 Making a good bug report
 Include steps to reproduce the issue, what you expected to happen, and what happened instead.
 
-Making a good merge request
-Passit has pretty good test coverage. When you make a change or fix a bug, you should add or modify a unit test to show how your change works. For example if you fixed a bug - the unit test should fail before your patch and pass after it.
+Making a good pull request
+Octopus has pretty good test coverage. When you make a change or fix a bug, you should add or modify a unit test to show how your change works. For example if you fixed a bug - the unit test should fail before your patch and pass after it.
 
 ### What if I’m not a programmer?
-If you want to work on Passit but nothing above sounds interesting or accessible to you, that’s okay! There are ways you could get involved:
+If you want to work on Octopus but nothing above sounds interesting or accessible to you, that’s okay! There are ways you could get involved:
 
 #### Security auditing
 Auditing/penetration testing is really great for us; the more we get, the more secure and reputable we will be.
@@ -87,7 +87,7 @@ Auditing/penetration testing is really great for us; the more we get, the more s
 We’d be interested in help with regards to UX design in particular. If you have a good sense of what makes a web app work well and you’re good at expressing those ideas through wireframing, we’d be interested in your help.
 
 #### Marketing
-If you would like to be a public advocate for Passit, get in touch with us and we’ll see what we can work out.
+If you would like to be a public advocate for Octopus, get in touch with us and we’ll see what we can work out.
 
 #### QA
 If you’d like to help us test future releases, all you’d need is the ability to access the Internet and a willingness to meticulously work through a spreadsheet.
